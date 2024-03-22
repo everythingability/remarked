@@ -69,8 +69,12 @@
                     var text = match[5];
                     var link = match[6];
                     /*console.log("Type: Link", text, link);*/
-                    link = link.replace("../", '') //fix "backup relative links"
-                    markdownContent = markdownContent.replace(`[${text}](${link})`, `<a href="javascript:loadPage('${link}')">${text}</a>`)
+                    if (link.startsWith("http")){
+                        markdownContent = markdownContent.replace(`[${text}](${link})`, `<a href="${link}">${text}</a>`)
+                    }else{
+                        link = link.replace("../", '') //fix "backup relative links"
+                        markdownContent = markdownContent.replace(`[${text}](${link})`, `<a href="javascript:loadPage('${link}')">${text}</a>`)
+                    }
                 }
             }
 

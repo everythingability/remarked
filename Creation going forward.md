@@ -8,3 +8,5 @@ The alternative is going somewhere else to create a document (with a name) that 
 
 Also links that you make, that don't exist yet can be used as personal placeholders, that sort of say "something should be here later".
 
+I'd better check and see if you can do [external links](https://www.andertons.co.uk/boss-katana-go-personal-guitar-headphone-amplifier). Oh bugger, no, let's fix that. Done I think.
+
