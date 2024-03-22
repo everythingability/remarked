@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!-- favicon from: https://iconscout.com/contributors/twitter-inc , thanks! -->
+    <link rel="shortcut icon" href="favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Remarked: The Simplest Markdown Site Maker (maybe)</title>
+    <!-- Javascript -->
+    <script src="libs/jquery-3.1.1.min.js"></script>
+    <script src="libs/popper.min.js"></script>
+    <script src="libs/bootstrap.bundle.min.js"></script>
+    <script src="libs/marked.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="libs/bootstrap.min.css">
+
+    <link rel="stylesheet" href="styles.css">
+ 
+
+
+    <script>
+        var x = 100 //just for demo purposes
+        var homepage = 'Home.md' //where you want to start from
+
+        window.onhashchange = function() {
+            var hash = window.location.hash.replace("#", "")
+            if (hash!=''){
+                //console.log("hash:", hash)
+                loadPage(hash)
+            }else{
+                //console.log(window.location)
+                loadPage(homepage)
+            }
+        
+          }   
+
+        function loadPage(markdownFileName) {
+            console.log("loadPage:", markdownFileName)
+            $.get(markdownFileName, function (data) {
+                html = myParse(data, markdownFileName)
+                $('#content').html(html);
+            }, 'text');
+
+            document.title = decodeURIComponent(markdownFileName.replace(".md", ""))
+            window.location.hash = `${markdownFileName}`;
+            
+        }
+
+        /* Turns markdown links and images into HTML links and images*/
+        function fixLinks(markdownContent) {
+            var regex = /(\!\[([^\[\]]+)\]\(([^\)]+)\))|(\[([^\[\]]+)\]\(([^\)]+)\))/g; //find markdown images and links.
+
+            let match;
+            while ((match = regex.exec(markdownContent)) !== null) {
+                if (match[1]) {
+                    var text = match[2];
+                    var link = match[3];
+                    /*console.log("Type: Image", text, link);*/
+                    markdownContent = markdownContent.replace(`![${text}](${link})`, `<img src="${link}" alt="${text}">`)
+
+                } else {
+                    var text = match[5];
+                    var link = match[6];
+                    /*console.log("Type: Link", text, link);*/
+                    link = link.replace("../", '') //fix "backup relative links"
+                    markdownContent = markdownContent.replace(`[${text}](${link})`, `<a href="javascript:loadPage('${link}')">${text}</a>`)
+                }
+            }
+
+            return markdownContent
+        }
+
+
+        function myParse(data) {
+            // maybe get any meta data from the page at this point?
+            data = fixLinks(data)          
+            var html = marked.parse(data) // Use the marked.js lib to turn markdown into HTML
+            return html
+        }
+    </script>
+
+</head>
+
+
+<body>
+
+    <div class="jumbotron text-center">
+        <h1><a href="javascript:loadPage( 'Home.md')  "><img src="favicon.svg" width="100" alt="logo">Remarked Home</a></h1>
+        <p>This single web page makes navigating a folderful of Markdown files possible - so simple!</p>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="content"> Your Home.md will be shown here. If it's not, maybe you opened this 
+                    HTML file rather than loading it from a server (which means jquery get() function 
+                     falls foul of CORS policies).
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="footer">
+        <div class="container">
+           Footer <span id="permalink"></span>
+        </div>
+    </footer>
+
+
+    <script>
+
+        //When the page has finished loading.... load your homepage
+        $(document).ready(function () {
+            //this could maybe look at search args to replace the homepage.
+            
+            if (window.location.hash){
+                var file = window.location.hash.replace("#", "")
+                console.log(`file: ${file}`)
+                if ( file != null && file.endsWith('.md') ){
+                    homepage = file
+                }
+            }
+              
+            $.get(homepage, function (data) {
+               // console.log(data)
+                html = myParse(data)
+                //console.log("html:", html)
+                $('#content').html(html);
+            }, 'text');
+
+        });
+
+    </script>
+
+</body>
+</html>
