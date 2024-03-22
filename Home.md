@@ -16,7 +16,7 @@ That file is then parsed into HTML using the excellent [marked.js](https://githu
 The other thing I wanted to explore was dropping Javascripts that execute into the Markdown files. This would be so that one might have a form (gathering relevant personal details, like name, age, weight etc) page that redirects to this page. The index.html file could then be adapted to ready these values on load, and plop them into variables that I might use throughout the content to display relevant content.
 
 ## Installation
-Drop the **index.html** into a folder of markdown files, then access it from a server. I'm using my Mac's Webserver folder.
+Drop the **index.html** into a folder of markdown files, then access it from a server. I'm using my Mac's Webserver folder. Actually that probably won't work now I've added jquery, bootstrap and css files etc), but that's the gist. Download the github repo, and replace the Markdown files with your own, ensuring one is called "Home.md" and then hack the "index.html" to look how you want, and do extra special bits you invent.
 
 
 ## Features?
